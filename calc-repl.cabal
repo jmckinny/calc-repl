@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Braces
+      Parser
   other-modules:
       Paths_calc_repl
   hs-source-dirs:
