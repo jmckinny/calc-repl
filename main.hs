@@ -42,15 +42,15 @@ instance Alternative Parser where
       Parser $ \input -> p1 input <|> p2 input
 
 
-charParse :: Char -> Parser Char
-charParse c = Parser p 
+parseChar :: Char -> Parser Char
+parseChar c = Parser p 
     where p [] = Nothing 
           p (x:xs) | x == c = Just (c,xs)
                    | otherwise = Nothing
 
 
-spanParser :: (Char -> Bool) -> Parser String
-spanParser f =
+parseSpan :: (Char -> Bool) -> Parser String
+parseSpan f =
   Parser $ \input ->
     let (token, rest) = span f input
      in Just (token, rest)
@@ -65,19 +65,19 @@ notNull (Parser p) =
       else Just (xs, input')
 
 parseNumber :: Parser Expr
-parseNumber = f <$> notNull (spanParser isDigit)
+parseNumber = f <$> notNull (parseSpan isDigit)
     where f ds = Value $ read ds
 
 parseSpace :: Parser Char
-parseSpace = charParse ' '
+parseSpace = parseChar ' '
 
 parseWhiteSpace :: Parser String 
-parseWhiteSpace = spanParser isSpace
+parseWhiteSpace = parseSpan isSpace
 
 
 parseOp :: Char -> Parser (Expr, Expr)
 parseOp op = pair
-    where pair = (,) <$> (charParse '(' *> parseExpr <* charParse op) <*> (parseExpr <* charParse ')')
+    where pair = (,) <$> (parseChar '(' *> parseExpr <* parseChar op) <*> (parseExpr <* parseChar ')')
 
 parseAdd :: Parser Expr
 parseAdd = Addition <$> parseOp '+'
