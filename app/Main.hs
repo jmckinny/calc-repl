@@ -9,8 +9,11 @@ main :: IO  ()
 main = do
     putStr "> "
     hFlush stdout
-    input <- getLine
-    if validBraces input then
-        unless (input == "quit" || input == "q")
-            $ print (parseEval input) >> main
-    else putStrLn "Invalid Braces!" >> main
+    done <- isEOF
+    if not done then do
+        input <- getLine
+        if validBraces input then
+            unless (input == "quit" || input == "q")
+                $ print (parseEval input) >> main
+        else putStrLn "Invalid Braces!" >> main
+    else putStrLn "Bye!"
